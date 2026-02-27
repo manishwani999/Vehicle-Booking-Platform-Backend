@@ -13,29 +13,23 @@
 
 A secure and scalable Vehicle Rental Management Backend built using Spring Boot, implementing JWT authentication, role-based access control, booking lifecycle automation, dashboard analytics, PDF receipt generation, and email integration.
 
-📌 Overview
+### 📌 Overview
 
-This project demonstrates a real-world backend system with:
+**This project demonstrates a real-world backend system with:**
 
-🔐 JWT-based Authentication
+- 🔐 JWT-based Authentication
+- 👥 Role-Based Access Control (ADMIN / USER)
+- 🚘 Vehicle Management
+- 📅 Booking Lifecycle Management
+- 📊 Revenue & Booking Dashboard Analytics
+- 🧾 PDF Receipt Generation
+- 📧 Email Notification Integration
 
-👥 Role-Based Access Control (ADMIN / USER)
+## ⏱ Scheduled Booking Completion
 
-🚘 Vehicle Management
+**Designed using layered architecture principles and RESTful API standards.**
 
-📅 Booking Lifecycle Management
-
-📊 Revenue & Booking Dashboard Analytics
-
-🧾 PDF Receipt Generation
-
-📧 Email Notification Integration
-
-⏱ Scheduled Booking Completion
-
-Designed using layered architecture principles and RESTful API standards.
-
-🏗 Architecture
+## 🏗 Architecture
 Controller Layer
         ↓
 Service Interface
@@ -56,40 +50,27 @@ CustomUserDetailsService
 
 Stateless Session Policy
 
-🛠 Tech Stack
-Backend
+## 🛠 Tech Stack
+**Backend**
+- Java 17+
+- Spring Boot 3+
+- Spring Security
+- Spring Data JPA
+- Hibernate
+- MySQL
+- Security
+- JWT (JSON Web Token)
+- BCrypt Password Encoder
+- Role-Based Access Control
 
-Java 17+
+**Utilities**
 
-Spring Boot 3+
+- OpenHTMLtoPDF (PDF generation)
+- JavaMailSender (Email)
+- Lombok
+- Jakarta Validation
 
-Spring Security
-
-Spring Data JPA
-
-Hibernate
-
-MySQL
-
-Security
-
-JWT (JSON Web Token)
-
-BCrypt Password Encoder
-
-Role-Based Access Control
-
-Utilities
-
-OpenHTMLtoPDF (PDF generation)
-
-JavaMailSender (Email)
-
-Lombok
-
-Jakarta Validation
-
-🔐 Authentication & Authorization
+## 🔐 Authentication & Authorization
 
 Stateless JWT authentication
 
