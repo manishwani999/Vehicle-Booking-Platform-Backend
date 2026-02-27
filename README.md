@@ -115,7 +115,9 @@ Request Body
   "email": "john@example.com",
   "password": "password123"
 }
+
 Login
+
 POST /api/users/login
 
 Request Body
@@ -133,24 +135,33 @@ Response
   "id": 1,
   "email": "john@example.com"
 }
+
 🚘 Vehicle APIs
 Get All Vehicles
 GET /api/vehicles
+
 Filter by Availability
 GET /api/vehicles/available/{true|false}
+
 Filter by Rent
 GET /api/vehicles/rent/{maxRent}
+
 Filter by Location
 GET /api/vehicles/location/{city}
+
 Add Vehicle (ADMIN)
 POST /api/vehicles/admin/{adminId}
 Authorization: Bearer <JWT>
+
 📅 Booking APIs
+
 Create Booking
 POST /api/bookings/user/{userId}/vehicle/{vehicleId}
 Authorization: Bearer <JWT>
+
 Cancel Booking
 PUT /api/bookings/cancel/{id}
+
 Download Receipt
 GET /api/bookings/receipt/{bookingId}
 
@@ -161,14 +172,10 @@ GET /api/dashboard/stats
 Authorization: Bearer <JWT>
 
 Returns:
-
-Total users
-
-Total vehicles
-
-Booking statistics
-
-Revenue
+- Total users
+- Total vehicles
+- Booking statistics
+- Revenue
 
 🗄 Database Design
 Entities
@@ -193,14 +200,15 @@ Update application.properties:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/vehiclerentalsystem
 spring.datasource.username=root
-spring.datasource.password=root
+spring.datasource.password={YOUR_PASSWORD}
 
 spring.jpa.hibernate.ddl-auto=update
 
 jwt.secret=your_secret_key
+
 ▶️ Running the Application
 1️⃣ Clone the Repository
-git clone https://github.com/your-username/vehicle-rental-system.git
+        git clone https://github.com/your-username/vehicle-rental-system.git
 2️⃣ Configure Database
 
 Create MySQL database:
@@ -285,22 +293,7 @@ Add cloud storage for receipts
 
 Add payment gateway integration
 
-💼 Resume Highlights
 
-Designed and implemented secure REST APIs using Spring Boot and JWT.
-
-Developed booking lifecycle management with automated state transitions.
-
-Implemented dashboard analytics using optimized JPQL aggregation queries.
-
-Integrated PDF generation and email notification system.
-
-Applied layered architecture and role-based authorization.
-
-📜 License
-
-This project is licensed under the MIT License.
 
 👨‍💻 Author
-
-Developed as a full-featured backend system demonstrating authentication, authorization, analytics, and scalable architecture principles.
+MANISH WANI
