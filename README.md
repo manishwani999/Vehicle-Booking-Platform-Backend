@@ -1,228 +1,211 @@
-# 🚗 Vehicle Rental System – Spring Boot Backend
+# Vehicle Rental System Backend
 
+Spring Boot backend for a vehicle rental platform with JWT authentication, role-based access control, booking lifecycle management, dashboard statistics, PDF receipt generation, and email delivery.
 
+## Features
+- JWT-based login and authorization
+- Role support: `ADMIN`, `USER`
+- Vehicle catalog and filters (availability, rent, location)
+- Admin vehicle management (add/list/delete)
+- Booking creation, cancellation, and receipt download
+- Automatic booking completion scheduler
+- Dashboard analytics for admin users
+- Receipt PDF generation (`openhtmltopdf`) and email attachment delivery
 
+## Tech Stack
+- Java 17
+- Spring Boot 3.5.x
+- Spring Security + JWT (`jjwt`)
+- Spring Data JPA (Hibernate)
+- MySQL 8
+- Maven
+- OpenHTMLtoPDF
+- Spring Mail (SMTP)
 
+## Project Structure
+```text
+src/main/java/com/vrs
+|- controller
+|- service / serviceImpl
+|- repository
+|- model
+|- security
+|- util
+src/main/resources
+|- application.properties
+|- templates/booking-receipt.html
+receipts/
+```
 
-A secure and scalable Vehicle Rental Management Backend built using Spring Boot, implementing JWT authentication, role-based access control, booking lifecycle automation, dashboard analytics, PDF receipt generation, and email integration.
+## Prerequisites
+- JDK 17+
+- Maven 3.9+ (or use `./mvnw`)
+- MySQL running locally
 
+## Setup
+1. Clone the repository.
+2. Create database:
+   ```sql
+   CREATE DATABASE vehiclerentalsystem;
+   ```
+3. Update `src/main/resources/application.properties` with your local values.
+4. Run:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+5. API base URL:
+   ```text
+   http://localhost:8080
+   ```
 
-## 📌 Overview
+## Configuration
+Use this as a safe template for `application.properties`:
 
-**This project demonstrates a real-world backend system with:**
+```properties
+spring.application.name=vehicleRentalSystem
+server.port=8080
 
-- 🔐 JWT-based Authentication
-- 👥 Role-Based Access Control (ADMIN / USER)
-- 🚘 Vehicle Management
-- 📅 Booking Lifecycle Management
-- 📊 Revenue & Booking Dashboard Analytics
-- 🧾 PDF Receipt Generation
-- 📧 Email Notification Integration
-- ⏱ Scheduled Booking Completion
+spring.datasource.url=jdbc:mysql://localhost:3306/vehiclerentalsystem
+spring.datasource.username=YOUR_DB_USER
+spring.datasource.password=YOUR_DB_PASSWORD
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
 
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=YOUR_EMAIL
+spring.mail.password=YOUR_APP_PASSWORD
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
 
+jwt.secret=YOUR_LONG_RANDOM_SECRET
+```
 
-**Designed using layered architecture principles and RESTful API standards.**
+Important: rotate secrets if real passwords or JWT secrets were ever committed.
 
-## 🏗 Architecture
+## Security and Access Rules
+- Public:
+  - `POST /api/users/register`
+  - `POST /api/users/register-admin`
+  - `POST /api/users/login`
+  - `GET /api/vehicles/**`
+- USER or ADMIN:
+  - `/api/bookings/**`
+- ADMIN only:
+  - `/api/vehicles/admin/**`
+  - `/api/dashboard/**`
 
+Send JWT in header:
+```text
+Authorization: Bearer <token>
+```
 
-> Controller Layer
->        ↓
-> Service Interface
->        ↓
-> Service Implementation
->        ↓
-> Repository Layer (JPA)
->        ↓
-> MySQL Database
+## API Endpoints
 
-<br>
+### Auth
+- `POST /api/users/register`
+- `POST /api/users/register-admin`
+- `POST /api/users/login`
+- `GET /api/users/{id}`
 
-> Security Layer:
-Spring Security
-JWT Filter
-CustomUserDetailsService
-Stateless Session Policy
-
-## 🛠 Tech Stack
-**Backend**
-- Java 17+
-- Spring Boot 3+
-- Spring Security
-- Spring Data JPA
-- Hibernate
-- MySQL
-- Security
-- JWT (JSON Web Token)
-- BCrypt Password Encoder
-- Role-Based Access Control
-
-**Utilities**
-
-- OpenHTMLtoPDF (PDF generation)
-- JavaMailSender (Email)
-- Lombok
-- Jakarta Validation
-
-## 🔐 Authentication & Authorization
-
-- Stateless JWT authentication
-- Role-based route protection
-- BCrypt password hashing
-- Roles
-- ADMIN
-- USER
-
-## 📄 API Documentation
-### 🔓 Authentication APIs
-**Register User**
-
->POST /api/users/register
-Request Body
+Register request:
+```json
 {
   "name": "John Doe",
   "email": "john@example.com",
   "password": "password123"
 }
+```
 
-**Login**
-
->POST /api/users/login
-Request Body
+Login request:
+```json
 {
   "email": "john@example.com",
   "password": "password123"
 }
+```
 
-**Response**
-
->{
-  "token": "jwt_token_here",
-  "role": "USER",
-  "id": 1,
-  "email": "john@example.com"
+Login response:
+```json
+{
+  "token": "eyJhbGciOi...",
+  "role": "USER"
 }
+```
 
-**🚘 Vehicle APIs**
-**Get All Vehicles**
->GET /api/vehicles
+### Vehicles
+- `GET /api/vehicles`
+- `GET /api/vehicles/id/{id}`
+- `GET /api/vehicles/available/{status}`
+- `GET /api/vehicles/rent/{maxRent}`
+- `GET /api/vehicles/location/{city}`
+- `POST /api/vehicles/admin/{adminId}` (ADMIN)
+- `GET /api/vehicles/admin/{adminId}` (ADMIN)
+- `DELETE /api/vehicles/{id}` (ADMIN)
 
-**Filter by Availability**
->GET /api/vehicles/available/{true|false}
+Add vehicle request:
+```json
+{
+  "brand": "Toyota",
+  "model": "Innova",
+  "rentPerDay": 2500,
+  "location": {
+    "id": 1
+  }
+}
+```
 
-**Filter by Rent**
->GET /api/vehicles/rent/{maxRent}
+### Bookings
+- `POST /api/bookings/user/{userId}/vehicle/{vehicleId}`
+- `GET /api/bookings`
+- `GET /api/bookings/{id}`
+- `PUT /api/bookings/cancel/{id}`
+- `GET /api/bookings/receipt/{bookingId}`
 
-**Filter by Location**
->GET /api/vehicles/location/{city}
+Create booking request:
+```json
+{
+  "startDate": "2026-03-01",
+  "endDate": "2026-03-04"
+}
+```
 
-**Add Vehicle (ADMIN)**
->POST /api/vehicles/admin/{adminId}
->Authorization: Bearer <JWT>
+### Dashboard (ADMIN)
+- `GET /api/dashboard/stats`
 
-**📅 Booking APIs**
+Sample response:
+```json
+{
+  "totalUsers": 25,
+  "totalVehicles": 40,
+  "availableVehicles": 12,
+  "totalBookings": 100,
+  "activeBookings": 8,
+  "completedBookings": 80,
+  "cancelledBookings": 12,
+  "totalRevenue": 350000.0
+}
+```
 
-**Create Booking**
->POST /api/bookings/user/{userId}/vehicle/{vehicleId}
-Authorization: Bearer <JWT>
+## Booking Lifecycle
+- On create: vehicle becomes unavailable and booking is `CONFIRMED`.
+- On cancel: booking becomes `CANCELLED` and vehicle becomes available.
+- Daily scheduler (`Asia/Kolkata`, midnight): past bookings are marked `COMPLETED` and vehicles are released.
 
-**Cancel Booking**
->PUT /api/bookings/cancel/{id}
+## Build and Test
+```bash
+./mvnw clean test
+./mvnw clean package
+```
 
-**Download Receipt**
->GET /api/bookings/receipt/{bookingId}
-
-Returns generated PDF file.
-
-**📊 Dashboard APIs (ADMIN)**
->GET /api/dashboard/stats
-Authorization: Bearer <JWT>
-
-**Returns:**
-
-- Total users
-- Total vehicles
-- Booking statistics
-- Revenue
-
-## 🗄 Database Design
-### Entities
-- User
-- Vehicle
-- Booking
-- Location
-### Enums
-> Role → ADMIN, USER
-> BookingStatus → CONFIRMED, CANCELLED, COMPLETED
-
-## ⚙ Configuration
-
-**Update application.properties:**
-
-> spring.datasource.url=jdbc:mysql://localhost:3306/vehiclerentalsystem
-spring.datasource.username=root
-spring.datasource.password={YOUR_PASSWORD}
-
-> spring.jpa.hibernate.ddl-auto=update
-
-> jwt.secret=your_secret_key
-
-### ▶️ Running the Application
-1️⃣ Clone the Repository
-
-       > git clone https://github.com/your_username/Vehicle-Booking-Platform-Backend.git
-       
-2️⃣ Configure Database
-
-### Create MySQL database:
-
-> CREATE DATABASE vehiclerentalsystem;
-
-3️⃣ Run Application
-> mvn spring-boot:run
-
-Server runs on:
-
-> http://localhost:8080
-
-🧪 Testing
-🔍 Manual API Testing
-
-You can test APIs using:
-- Postman
-- Thunder Client
-- cURL
+## Notes
+- Receipts are generated under `receipts/`.
+- `Location` is required when adding a vehicle (`location.id` must exist in DB).
+- Recommended improvement for money fields: use `BigDecimal` instead of `double`.
 
 
-
-
-
-## 📈 Key Features
-
-> ✔ Secure JWT Authentication
-✔ Role-Based Access Control
-✔ Booking Lifecycle Automation
-✔ Revenue Analytics
-✔ Scheduled Task Execution
-✔ PDF Receipt Generation
-✔ Email Integration
-✔ Layered Architecture
-
-## 🚀 Future Improvements
-
-- Replace monetary double fields with BigDecimal
-- Add optimistic locking to prevent double booking
-- Implement refresh-token mechanism
-- Add Swagger/OpenAPI documentation
-- Add Docker support
-- Add CI/CD pipeline
-- Add cloud storage for receipts
-- Add payment gateway integration
-
-
-
-## 👨‍💻 Author
-<br>
-  MANISH WANI
+## Author 
+- Manish Wani
