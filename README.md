@@ -1,6 +1,6 @@
-# Vehicle Rental System Backend
+# Vehicle Booking Platform Backend
 
-Spring Boot backend for a vehicle rental platform with JWT authentication, role-based access control, booking lifecycle management, dashboard statistics, PDF receipt generation, and email delivery.
+Spring Boot backend for a vehicle booking platform with JWT authentication, role-based access control, booking lifecycle management, dashboard statistics, PDF receipt generation, and email delivery.
 
 ## Features
 - JWT-based login and authorization
