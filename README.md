@@ -208,4 +208,6 @@ Sample response:
 
 
 ## Author 
-- Manish Wani
+Manish Wani
+- LinkedIn: linkedin.com/in/manishwani999
+- Email: wanimanishr@gmail.com
