@@ -224,4 +224,5 @@ You can test APIs using:
 
 
 ## 👨‍💻 Author
+<br>
   MANISH WANI
